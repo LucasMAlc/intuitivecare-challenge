@@ -1,0 +1,14 @@
+# Ambiente virtual
+venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Dados gerados (ANS)
+data/raw/*
+data/processed/*
+data/final/*
+
+# Variáveis de ambiente
+.env

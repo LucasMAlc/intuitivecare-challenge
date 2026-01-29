@@ -1,0 +1,10 @@
+requests
+pandas
+numpy
+python-dotenv
+psycopg2-binary
+fastapi
+uvicorn
+tqdm
+beautifulsoup4
+lxml
