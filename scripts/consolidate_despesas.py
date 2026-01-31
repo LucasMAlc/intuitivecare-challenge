@@ -44,7 +44,7 @@ def main():
     )
 
     # --- Escrita e compactação ---
-    csv_content = consolidado.to_csv(index=False)
+    csv_content = consolidado.to_csv(index=False, encoding="utf-8-sig")
 
     with zipfile.ZipFile(OUTPUT_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr(OUTPUT_CSV_NAME, csv_content)
