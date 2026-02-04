@@ -10,7 +10,7 @@ Cada teste possui scripts independentes, mas segue um padrão de organização c
 
 ```bash
 intuitivecare-challenge/
-├── README.md
+├── README.md       # Documentação
 ├── requirements.txt
 ├── .gitignore
 ├── .gitattributes
@@ -31,9 +31,16 @@ intuitivecare-challenge/
 │    └── validate_despesas.py
 │
 ├── sql/            # Teste 3
-├── frontend/       # Teste 4
-└── api/            # Teste 4
+├── frontend/       # Teste 4 (vazio)
+└── api/            # Teste 4 (vazio)
  ```
+
+### Pré-requisitos
+- Python 3.10+
+- Ambiente virtual ativo
+- Dependências instaladas
+- PostgreSQL
+- Desenvolvido no Windows 11.
 
 ---
 
@@ -268,11 +275,6 @@ Decisão: Ordenação em memória utilizando pandas.sort_values
 
 ## Execução dos Testes 1 e Teste 2
 
-### Pré-requisitos
-- Python 3.10+
-- Ambiente virtual ativo
-- Dependências instaladas
-
 ### Execução completa
 
 ```bash
@@ -283,4 +285,108 @@ Esse comando executa todas as etapas dos Testes 1 e Teste 2, do download até a 
 
 ---
 
-# Teste 3 - Teste de Banco de dados e Análise
+# Teste 3 - Teste de Banco de dados e Análise SQL
+
+Este teste avalia a capacidade de modelagem relacional, carga de dados e análise SQL, utilizando os arquivos gerados nos Testes 1 e 2.
+
+A solução foi implementada no PostgreSQL e organizada na pasta ```sql/```.
+
+## Visão Geral da Solução
+
+Foram utilizados os seguintes arquivos como entrada:
+
+- consolidado_despesas.csv (Teste 1)
+
+- despesas_agregadas.csv (Teste 2)
+
+- operadoras_ativas.csv (dados cadastrais da ANS)
+
+O teste é composto por três etapas:
+
+1. Criação das tabelas (DDL)
+
+2. Importação e tratamento dos dados
+
+3. Execução de queries analíticas
+
+---
+
+## Decisões Técnicas
+
+#### Modelagem e Normalização
+
+**Abordagem escolhida:** ✔️ Tabelas normalizadas
+
+**Tabelas criadas:**
+* `operadoras`
+* `despesas_consolidadas`
+* `despesas_agregadas`
+
+**Justificativa:**
+* Volume de dados moderado
+* Dados cadastrais e financeiros com naturezas distintas
+* Queries analíticas mais simples e legíveis
+* Evita redundância e inconsistências
+
+#### Tipos de Dados
+
+##### Valores monetários
+* **Tipo:** `DECIMAL`
+* **Motivo:** precisão financeira e ausência de erros de arredondamento
+
+##### Datas
+* **Tipo:** `DATE`
+* **Motivo:** permite análises temporais e evita ambiguidades de formato
+
+#### Importação dos Dados
+
+A carga dos CSVs é feita via tabelas intermediárias (staging), com limpeza antes da inserção final.
+
+#### Tratamento de Inconsistências
+
+| Problema encontrado | Tratamento |
+|---|---|
+| Encoding inconsistente | Importação com encoding adequado (UTF-8 / Latin1) |
+| CNPJ em notação científica | Remoção de não numéricos e padronização |
+| Strings em campos numéricos | Conversão explícita (`CAST`) |
+| Datas em formatos variados | Conversão com `TO_DATE` |
+| Valores NULL em campos críticos | Registros descartados |
+
+**Justificativa:** garantir integridade e evitar resultados analíticos incorretos.
+
+#### Queries Analíticas
+
+As queries solicitadas estão no arquivo `03_queries_analiticas.sql`.
+
+##### Query 1 — Crescimento Percentual de Despesas
+* Calcula o crescimento entre o primeiro e o último trimestre disponível por operadora
+* Operadoras sem dados suficientes são ignoradas
+
+**Justificativa:** evita distorções causadas por períodos ausentes.
+
+##### Query 2 — Distribuição de Despesas por UF
+* Soma total de despesas por UF
+* Cálculo adicional da média de despesas por operadora em cada UF
+
+##### Query 3 — Operadoras Acima da Média
+* Identifica operadoras com despesas acima da média em pelo menos 2 dos 3 trimestres
+* Utiliza CTEs para clareza e manutenção do código
+
+**Trade-off técnico:** CTEs priorizam legibilidade e manutenção, com performance adequada ao volume de dados.
+
+
+## Execução do Teste 3
+
+Os scripts SQL devem ser executados na seguinte ordem:
+
+1. 01_create_database.sql
+
+2. 02_create_tables.sql
+
+3. 03_create_staging_tables.sql
+
+4. 04_copy_data.sql
+
+5. 05_insert_final_tables.sql
+
+6. 06_analytical_queries.sql
