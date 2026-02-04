@@ -15,11 +15,11 @@ steps = [
 ]
 
 for step in steps:
-    print(f"\n▶️ Executando {step}")
+    print(f"\n Executando {step}")
     result = subprocess.run([sys.executable, step])
 
     if result.returncode != 0:
-        print(f"❌ Erro em {step}. Pipeline interrompido.")
+        print(f"Erro em {step}. Pipeline interrompido.")
         break
 else:
     print("\n✅ Pipeline executado com sucesso!")
