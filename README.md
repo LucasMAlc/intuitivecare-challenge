@@ -315,7 +315,7 @@ O teste é composto por três etapas:
 
 #### Modelagem e Normalização
 
-**Abordagem escolhida:** ✔️ Tabelas normalizadas
+**Abordagem escolhida:** Tabelas normalizadas
 
 **Tabelas criadas:**
 * `operadoras`
